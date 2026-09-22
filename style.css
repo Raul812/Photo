@@ -62,7 +62,7 @@ body.is-locked { overflow: hidden; }
   max-width: 1800px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 两列 */
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 默认两列 */
   gap: var(--gap);
 }
 
@@ -77,6 +77,11 @@ body.is-locked { overflow: hidden; }
   cursor: zoom-in;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
+  transition: z-index 0s; 
+}
+
+.photo:hover {
+  z-index: 10; /* 悬停时防止被旁边的图遮挡 */
 }
 
 .photo img {
@@ -86,8 +91,28 @@ body.is-locked { overflow: hidden; }
   aspect-ratio: 3 / 4; /* 强制 3:4 比例，完美对齐网格 */
   object-fit: cover;   /* 裁剪适应比例，不留黑边 */
   background: #121214;
-  /* 直接显示，不再使用透明的淡入动画 */
-  opacity: 1; 
+  opacity: 1;
+
+  /* 左右轻微浮动动画，由 JS 注入随机时长和延迟 */
+  animation: sway var(--float-duration, 5s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+  
+  /* 悬停放大与阴影过渡 */
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              box-shadow 0.4s ease;
+}
+
+.photo:hover img {
+  animation-play-state: paused; /* 鼠标移上去，浮动停止 */
+  transform: scale(1.04);        /* 轻微放大 4% */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); /* 浮起来的阴影 */
+}
+
+/* 左右浮动的关键帧 */
+@keyframes sway {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(-6px); }
+  100% { transform: translateX(0px); }
 }
 
 .photo:focus-visible {
@@ -136,7 +161,7 @@ body.is-locked { overflow: hidden; }
 
 .lb-img {
   max-width: 96vw;
-  max-height: 82vh;
+  max-height: 95vh; /* 放大到 95vh，解决点击反而变小的问题 */
   width: auto;
   height: auto;
   object-fit: contain;
@@ -196,23 +221,25 @@ body.is-locked { overflow: hidden; }
 .lb-prev { left: 8px; }
 .lb-next { right: 8px; }
 
-/* ---------- 响应式（手机端单列） ---------- */
+/* ---------- 响应式（手机端单列并关闭浮动） ---------- */
 @media (max-width: 720px) {
   .gallery {
-    grid-template-columns: 1fr; /* 手机端变成 1 列 */
+    grid-template-columns: 1fr; 
     gap: 6px;
   }
   .photo img {
-    aspect-ratio: auto; /* 手机单列时，让图片保持自然高度，不要裁剪 */
+    aspect-ratio: auto; 
     max-height: 85vh;
     object-fit: contain;
+    animation: none; /* 手机端关闭动画 */
   }
   .lb-nav { width: 48px; height: 48px; font-size: 26px; }
   .lb-prev { left: 0; }
   .lb-next { right: 0; }
-  .lb-img { max-height: 78vh; }
+  .lb-img { max-height: 85vh; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition-duration: 0.01ms !important; }
+  .photo img { animation: none !important; }
 }

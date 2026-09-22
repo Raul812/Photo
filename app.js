@@ -44,12 +44,11 @@
       img.style.aspectRatio = `${photo.width} / ${photo.height}`;
     }
 
-    const reveal = () => img.classList.add('is-loaded');
-    if (img.complete) reveal();
-    else {
-      img.addEventListener('load', reveal, { once: true });
-      img.addEventListener('error', reveal, { once: true });
-    }
+    // 【新增】注入随机动画参数，让每张图“左右浮动”的节奏错开
+    const duration = (4 + Math.random() * 3).toFixed(2); // 4~7秒一个来回
+    const delay = (Math.random() * 3).toFixed(2);        // 延迟 0~3 秒启动
+    img.style.setProperty('--float-duration', `${duration}s`);
+    img.style.setProperty('--float-delay', `${delay}s`);
 
     button.appendChild(img);
     return button;
