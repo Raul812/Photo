@@ -56,7 +56,7 @@ body.is-locked { overflow: hidden; }
 }
 /* ---------- 主页简介（RAUL 署名） ---------- */
 .intro {
-  padding: calc(52px + 80px) 24px 40px; /* 顶栏52px + 额外80px留白 */
+  padding: calc(52px + 30px) 24px 40px; /* 顶栏52px + 额外30px留白 */
   display: flex;
   flex-direction: column;
   align-items: center;
