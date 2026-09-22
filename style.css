@@ -85,8 +85,6 @@ body.is-locked { overflow: hidden; }
   transition: opacity 0.8 ease;
 }
 
-.photo img.is-loaded { opacity: 1; }
-
 .photo:focus-visible {
   outline: 1px solid rgba(255, 255, 255, 0.5);
   outline-offset: -1px;
