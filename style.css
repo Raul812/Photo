@@ -21,7 +21,7 @@ body {
 
 body.is-locked { overflow: hidden; }
 
-/* ---------- 顶栏（滚动时自动隐藏） ---------- */
+/* ---------- 顶栏 ---------- */
 .topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -55,14 +55,15 @@ body.is-locked { overflow: hidden; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 画廊（两列网格） ---------- */
+/* ---------- 画廊（自动适配密集照片墙） ---------- */
 .gallery {
-  --gap: clamp(4px, 0.6vw, 10px);
+  --gap: clamp(4px, 0.6vw, 8px);
   padding: calc(52px + var(--gap)) var(--gap) var(--gap);
   max-width: 1800px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 默认两列 */
+  /* 核心改动：桌面端自动排列 3~5 列，每个格子最小 280px，首页变成缩略图 */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
   gap: var(--gap);
 }
 
@@ -81,34 +82,32 @@ body.is-locked { overflow: hidden; }
 }
 
 .photo:hover {
-  z-index: 10; /* 悬停时防止被旁边的图遮挡 */
+  z-index: 10;
 }
 
 .photo img {
   display: block;
   width: 100%;
   height: 100%;
-  aspect-ratio: 3 / 4; /* 强制 3:4 比例，完美对齐网格 */
-  object-fit: cover;   /* 裁剪适应比例，不留黑边 */
+  aspect-ratio: 3 / 4; /* 3:4 缩略图 */
+  object-fit: cover;   
   background: #121214;
   opacity: 1;
 
-  /* 左右轻微浮动动画，由 JS 注入随机时长和延迟 */
+  /* 左右轻微浮动动画 */
   animation: sway var(--float-duration, 5s) ease-in-out infinite;
   animation-delay: var(--float-delay, 0s);
   
-  /* 悬停放大与阴影过渡 */
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.4s ease;
+  /* 过渡动画 */
+  transition: box-shadow 0.4s ease;
 }
 
+/* 核心改动：鼠标悬停只暂停浮动 + 加阴影，坚决不放大 */
 .photo:hover img {
-  animation-play-state: paused; /* 鼠标移上去，浮动停止 */
-  transform: scale(1.04);        /* 轻微放大 4% */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); /* 浮起来的阴影 */
+  animation-play-state: paused; 
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8); 
 }
 
-/* 左右浮动的关键帧 */
 @keyframes sway {
   0% { transform: translateX(0px); }
   50% { transform: translateX(-6px); }
@@ -134,7 +133,7 @@ body.is-locked { overflow: hidden; }
   border-radius: 3px;
 }
 
-/* ---------- 灯箱 ---------- */
+/* ---------- 灯箱（大图） ---------- */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -161,7 +160,7 @@ body.is-locked { overflow: hidden; }
 
 .lb-img {
   max-width: 96vw;
-  max-height: 95vh; /* 放大到 95vh，解决点击反而变小的问题 */
+  max-height: 96vh; /* 核心改动：大图几乎铺满全屏 */
   width: auto;
   height: auto;
   object-fit: contain;
@@ -221,22 +220,25 @@ body.is-locked { overflow: hidden; }
 .lb-prev { left: 8px; }
 .lb-next { right: 8px; }
 
-/* ---------- 响应式（手机端单列并关闭浮动） ---------- */
+/* ---------- 响应式（手机端 2 列，关闭动画） ---------- */
 @media (max-width: 720px) {
   .gallery {
-    grid-template-columns: 1fr; 
-    gap: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 手机端 2 列缩略图 */
+    gap: 4px;
   }
   .photo img {
-    aspect-ratio: auto; 
-    max-height: 85vh;
-    object-fit: contain;
-    animation: none; /* 手机端关闭动画 */
+    aspect-ratio: 3 / 4; 
+    max-height: none;
+    object-fit: cover;
+    animation: none; /* 手机端关闭浮动，保证性能 */
+  }
+  .photo:hover img {
+    box-shadow: none; /* 手机端无悬停概念 */
   }
   .lb-nav { width: 48px; height: 48px; font-size: 26px; }
   .lb-prev { left: 0; }
   .lb-next { right: 0; }
-  .lb-img { max-height: 85vh; }
+  .lb-img { max-height: 90vh; }
 }
 
 @media (prefers-reduced-motion: reduce) {
