@@ -56,7 +56,7 @@ body.is-locked { overflow: hidden; }
 }
 /* ---------- 主页简介（RAUL 署名） ---------- */
 .intro {
-  padding: 100px 24px 40px; /* 为固定顶栏留出空间 */
+  padding: calc(52px + 80px) 24px 40px; /* 顶栏52px + 额外80px留白 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,15 +84,15 @@ body.is-locked { overflow: hidden; }
   margin-top: 8px;
   font-size: 12px;
   letter-spacing: 0.1em;
-  color: #888;
-  text-decoration: none;
+  color: #888 !important; /* 强制灰色 */
+  text-decoration: none !important; /* 去掉蓝色下划线 */
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 3px;
   transition: color 0.3 ease, border-color 0.3 ease;
 }
 
 .intro__email:hover {
-  color: #fff;
+  color: #fff !important;
   border-color: #fff;
 }
 
