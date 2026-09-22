@@ -20,10 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install exiftool
+      - name: Install exiftool and ImageMagick
         run: |
           sudo apt-get update
-          sudo apt-get install -y libimage-exiftool-perl
+          sudo apt-get install -y libimage-exiftool-perl imagemagick
 
       - name: Generate photo manifest
         run: node scripts/build-manifest.js
@@ -31,9 +31,16 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          for f in index.html style.css app.js photos.json photos CNAME .nojekyll; do
+          for f in index.html style.css app.js photos.json photos CNAME .nojekyll favicon.ico favicon.png favicon.svg apple-touch-icon.png; do
             if [ -e "$f" ]; then cp -R "$f" _site/; fi
           done
+          
+          # 拷贝原始照片到 _site 目录
+          mkdir -p _site/photos
+          cp -R photos/* _site/photos/
+          
+          # 自动压缩 _site 里的照片（保留 EXIF）
+          find _site/photos -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -exec mogrify -resize 2560x2560\> -quality 82 -define exif:preserve=true {} \;
 
       - uses: actions/configure-pages@v5
 
