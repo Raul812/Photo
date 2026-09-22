@@ -29,7 +29,7 @@ body.is-locked { overflow: hidden; }
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: transform 0.35s ease;
+  transition: transform 0.35 ease;
 }
 
 .topbar.is-hidden { transform: translateY(-100%); }
@@ -81,8 +81,8 @@ body.is-locked { overflow: hidden; }
   max-height: 92vh;
   object-fit: contain;
   background: #121214;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+  opacity: 1;
+  transition: opacity 0.8 ease;
 }
 
 .photo img.is-loaded { opacity: 1; }
